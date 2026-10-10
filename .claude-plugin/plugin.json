@@ -1,6 +1,6 @@
 {
   "name": "power-stats",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "remote-control（手機）session 每輪回覆結尾附上 Mac 電量與電池溫度：送出時 → 結束時",
   "author": { "name": "ayii" }
 }

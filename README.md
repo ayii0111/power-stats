@@ -8,6 +8,12 @@
 
 箭頭左邊是送出 prompt 當下的數值，右邊是 AI 停止回覆時的數值。終端機等非手機 session 不受影響。
 
+另外，session 的第一個 prompt 送出後，回覆會先以一則訊息顯示當下數值，再處理請求：
+
+```
+🔋 98% · 🌡  30.6°C
+```
+
 ## 安裝
 
 ```
@@ -20,7 +26,7 @@ claude plugin install power-stats@custom-tools
 
 ## 運作方式
 
-1. `UserPromptSubmit` hook（`power_hook.zsh submit`）：讀取數值，存到 `$TMPDIR/power-stats/<session_id>`。
+1. `UserPromptSubmit` hook（`power_hook.zsh submit`）：讀取數值，存到 `$TMPDIR/power-stats/<session_id>`。若該檔原本不存在（session 的第一個 prompt），另以 `additionalContext` 請模型先原樣輸出當下數值。
 2. `Stop` hook（`power_hook.zsh stop`）：再讀一次數值組成一行，回傳 `decision: block`，請模型把這一行原樣輸出成本輪最後一則訊息。
 3. 再次停止時 `stop_hook_active` 為 true，hook 放行，不會無限循環。
 

@@ -3,7 +3,7 @@
 # 別名 power_hook: remote-control（手機）session 的電量溫度回報 hook
 # 只在 CLAUDE_CODE_ENVIRONMENT_KIND=bridge 時作用，其餘 session 什麼都不做
 # 用法（由 settings hooks 呼叫，stdin 為 hook 的 JSON 輸入）：
-#   power_hook.zsh submit  UserPromptSubmit：記下送出時的數值
+#   power_hook.zsh submit  UserPromptSubmit：記下送出時的數值；session 首個 prompt 另請模型先輸出當下數值
 #   power_hook.zsh stop    Stop：取結束時數值，擋下一次停止，請模型原樣輸出一行
 
 # 函式內的 $0 是函式名稱，腳本所在目錄須在頂層取得
@@ -22,7 +22,21 @@ main() {
   case $mode in
     submit)
       command mkdir -p $state_dir
+      # 狀態檔尚不存在，代表本 session 的第一個 prompt
+      local is_first=0
+      ! [[ -e $start_file ]] && is_first=1
       $stats_cmd -j > $start_file 2>/dev/null || : > $start_file
+      (( $is_first )) || return 0
+      local now='{}'
+      [[ -s $start_file ]] && now=$(command cat $start_file)
+      # 例：🔋 100% · 🌡  30.8°C；缺值以 ? 代替
+      local line=$(command jq -rn --argjson n "$now" '
+        def v(x): if x == null then "?" else (x | tostring) end;
+        "🔋 \(v($n.battery))% · 🌡  \(v($n.temp_c))°C"')
+      local context="【電量回報】在處理用戶請求之前，先把下面這一行原樣輸出成一則獨立訊息（不要加任何說明），之後再照常處理請求：
+$line"
+      command jq -n --arg c "$context" \
+        '{hookSpecificOutput: {hookEventName: "UserPromptSubmit", additionalContext: $c}}'
       ;;
     stop)
       # 模型已因本 hook 續寫過一次：放行，避免無限迴圈
