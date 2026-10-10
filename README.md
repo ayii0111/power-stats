@@ -11,11 +11,11 @@
 ## 安裝
 
 ```
-claude plugin marketplace add ~/cc-projects/power-stats
-claude plugin install power-stats@power-stats
+claude plugin marketplace add ayii0111/custom-tools
+claude plugin install power-stats@custom-tools
 ```
 
-以資料夾作為 marketplace 安裝時，Claude Code 直接讀取此資料夾；修改後執行 `/reload-plugins` 即可。
+開發時可改用本機資料夾作為 marketplace（`claude plugin marketplace add ~/cc-projects/power-stats`、`claude plugin install power-stats@power-stats`），Claude Code 會直接讀取此資料夾；修改後執行 `/reload-plugins` 即可。
 已開著的手機 session 不會套用，需從手機開新對話。
 
 ## 運作方式
