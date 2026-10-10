@@ -1,0 +1,16 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "power-stats",
+  "description": "power-stats",
+  "owner": {
+    "name": "ayii"
+  },
+  "plugins": [
+    {
+      "name": "power-stats",
+      "description": "remote-control（手機）session 每輪回覆結尾附上 Mac 電量與電池溫度",
+      "source": "./",
+      "category": "productivity"
+    }
+  ]
+}
