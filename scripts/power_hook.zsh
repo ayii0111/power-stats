@@ -6,6 +6,9 @@
 #   power_hook.zsh submit  UserPromptSubmit：記下送出時的數值
 #   power_hook.zsh stop    Stop：取結束時數值，擋下一次停止，請模型原樣輸出一行
 
+# 函式內的 $0 是函式名稱，腳本所在目錄須在頂層取得
+_script_dir=${0:A:h}
+
 main() {
   local mode=${1-}
   local input=$(command cat)
@@ -14,7 +17,7 @@ main() {
   local session_id=$(print -r -- "$input" | command jq -r '.session_id // "unknown"')
   local state_dir=${TMPDIR:-/tmp}/power-stats
   local start_file=$state_dir/$session_id
-  local stats_cmd=${0:A:h}/mac_stats.zsh
+  local stats_cmd=$_script_dir/mac_stats.zsh
 
   case $mode in
     submit)
@@ -46,4 +49,5 @@ $line"
 main "$@"
 _status=$?
 unfunction main
+unset _script_dir
 return $_status
